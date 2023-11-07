@@ -1,8 +1,9 @@
 import Debug "mo:base/Debug";
 import Principal "mo:base/Principal";
 import Nat8 "mo:base/Nat8";
+import Text "mo:base/Text";
 
-actor class NFT(name: Text, owner: Principal, content: [Nat8]) {
+actor class NFT(name: Text, owner: Principal, content: [Nat8]) = this {
 
   let itemName = name;
   let nftOwner = owner;
@@ -20,5 +21,7 @@ actor class NFT(name: Text, owner: Principal, content: [Nat8]) {
     return imageBytes;
   };
 
-
+  public query func getCanisterId() : async Principal {
+    return Principal.fromActor(this);
+  }
 }
