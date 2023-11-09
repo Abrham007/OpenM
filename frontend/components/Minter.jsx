@@ -1,16 +1,36 @@
-import React from "react";
-
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { openm } from "../../src/declarations/openm/index.js"
+import Item from "./Item.jsx";
+import {Principal} from "@dfinity/principal"
 function Minter() {
-  const { register, handleSubmit } = useFrom();
+  const { register, handleSubmit } = useForm();
+  const [nftPrinciple, setNftPrinciple ] = useState("")
+  const [loaderHidden, setLoaderHidden] = useState(true);
 
   async function onSubmit(data) {
+    setLoaderHidden(false)
     const name = data.name;
     const image = data.image[0];
     const imageArray = await image.arrayBuffer();
     const imageByteData = [...new Uint8Array(imageArray)];
+
+    const newNFTID = await openm.mint(imageByteData, name);
+
+    setNftPrinciple(newNFTID);
+    setLoaderHidden(true)
+
   }
+  if (nftPrinciple == "") {
   return (
-    <div className="minter-container">
+    
+    <div hidden={loaderHidden} className="minter-container">
+      <div className="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
       <h3 className="makeStyles-title-99 Typography-h3 form-Typography-gutterBottom">
         Create NFT
       </h3>
@@ -41,11 +61,23 @@ function Minter() {
           </div>
         </div>
         <div className="form-ButtonBase-root form-Chip-root makeStyles-chipBlue-108 form-Chip-clickable">
-          <span className="form-Chip-label">Mint NFT</span>
+          <span onClick={handleSubmit(onSubmit)} className="form-Chip-label">Mint NFT</span>
         </div>
       </form>
     </div>
   );
+  } else {
+    return (
+    <div className="minter-container">
+    <h3 className="Typography-root makeStyles-title-99 Typography-h3 form-Typography-gutterBottom">
+      Minted!
+    </h3>
+    <div className="horizontal-center">
+      <Item id={nftPrinciple.toText()}/>
+    </div>
+  </div>
+    )
+  }
 }
 
 export default Minter;
