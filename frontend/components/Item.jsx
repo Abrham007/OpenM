@@ -12,7 +12,7 @@ function Item(props) {
   const [owner, setOwner] = useState();
   const [image, setImage] = useState();
 
-  const id = Principal.fromText(props.id);
+  const id = props.id;
   const localHost = "http://127.0.0.1:3000/";
   const agent = new HttpAgent({ host: localHost });
 
