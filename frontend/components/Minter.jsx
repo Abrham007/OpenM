@@ -23,9 +23,8 @@ function Minter() {
   }
   if (nftPrinciple == "") {
   return (
-    
-    <div hidden={loaderHidden} className="minter-container">
-      <div className="lds-ellipsis">
+    <div  className="minter-container">
+      <div hidden={loaderHidden} className="lds-ellipsis">
         <div></div>
         <div></div>
         <div></div>
