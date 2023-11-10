@@ -2,7 +2,10 @@
   "name": "openm",
   "version": "0.1.0",
   "description": "The Place to Buy and Sell NFTs on the Internet Computer",
-  "keywords": ["NFT", "OpenM"],
+  "keywords": [
+    "NFT",
+    "OpenM"
+  ],
   "scripts": {
     "dev": "vite",
     "prebuild": "dfx generate",
@@ -19,6 +22,7 @@
     "react-bootstrap": "^2.9.1",
     "react-dom": "^18.1.0",
     "react-hook-form": "^7.47.0",
+    "react-router": "^6.18.0",
     "react-router-dom": "^6.18.0",
     "ts-loader": "^9.5.0",
     "typescript": "^5.2.2"
