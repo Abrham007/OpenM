@@ -5,6 +5,8 @@ import {Principal} from "@dfinity/principal"
 import { idlFactory } from "../../src/declarations/nft/nft.did.js"
 import Button  from "./Button.jsx";
 import { openm } from "../../src/declarations/openm/index.js"
+import CURRENT_USER_ID from "../main.jsx";
+import PriceLabel from "./PriceLabel.jsx";
 
 function Item(props) {
   const [name, setName] = useState();
@@ -15,6 +17,7 @@ function Item(props) {
   const [loaderHidden, setLoaderHidden] = useState(true);
   const [blur, setBlur] = useState();
   const [sellStatus, setSellStatus] = useState("");
+  const [priceLabel, setPriceLabel] = useState()
 
   const id = props.id;
   const localHost = "http://127.0.0.1:3000/";
@@ -42,6 +45,8 @@ function Item(props) {
     setOwner(owner.toText());
     setImage(image);
 
+
+  if (props.role == "collection") {
     const nftIsListed = await openm.isListed(props.id);
 
     if(nftIsListed) {
@@ -51,8 +56,16 @@ function Item(props) {
     }else {
       setButton(<Button handleClick={handleSell} text={"Sell"}/>)
     }
-    
+  }else if (props.role == "discover") {
+    const originalOwner = await openm.getOriginalOwner(props.id);
+    if (originalOwner.toText() != CURRENT_USER_ID.toText()) {
+      setButton(<Button handleClick={handleBuy} text={"Buy"}/>)
+    }
+
+    const price = await openm.getListedNFTPrice(props.id);
+    setPriceLabel(<PriceLabel sellPrice={price.toString()}/>)
   }
+}
 
   useEffect(() => {
     loadNFT();
@@ -61,7 +74,7 @@ function Item(props) {
   let price;
   function handleSell() {
     setPriceInput(<input
-      placeholder="Price in DANG"
+      placeholder="Price in MANGO"
       type="number"
       className="price-input"
       value={price}
@@ -91,6 +104,10 @@ function Item(props) {
     }
   }
 
+  async function handleBuy() {
+    console.log("some")
+  }
+
   return (
     <div className="disGrid-item">
       <div className="disPaper-root disCard-root makeStyles-root-17 disPaper-elevation1 disPaper-rounded">
@@ -106,6 +123,7 @@ function Item(props) {
         <div></div>
       </div>
         <div className="disCardContent-root">
+          {priceLabel}
           <h2 className="disTypography-root makeStyles-bodyText-24 disTypography-h5 disTypography-gutterBottom">
             {name}<span className="purple-text"> {sellStatus}</span>
           </h2>
