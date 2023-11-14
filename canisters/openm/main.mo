@@ -7,6 +7,7 @@ import HashMap "mo:base/HashMap";
 import List "mo:base/List";
 import Hash "mo:base/Hash";
 import Iter "mo:base/Iter";
+import Debug "mo:base/Debug";
 
 
 actor OpenM {
@@ -29,7 +30,7 @@ actor OpenM {
 
     mapOfNFTs.put(newNFTPrincipal, newNFT);
     addToOwnershipMap(owner, newNFTPrincipal);
-
+    Debug.print("aso");
     return newNFTPrincipal;
   };
 
