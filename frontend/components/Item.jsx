@@ -3,6 +3,7 @@ import logo from "../assets/logo.png";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import {Principal} from "@dfinity/principal"
 import { idlFactory } from "../../src/declarations/nft/nft.did.js"
+import { idlFactory as tokenIdlFactory } from "../../src/declarations/token/index.js";
 import Button  from "./Button.jsx";
 import { openm } from "../../src/declarations/openm/index.js"
 import CURRENT_USER_ID from "../main.jsx";
@@ -105,7 +106,18 @@ function Item(props) {
   }
 
   async function handleBuy() {
-    console.log("some")
+    console.log("buy was triggered")
+    const tokenActor = await Actor.createActor(tokenIdlFactory, {
+      agent,
+      canisterId: Principal.fromText("br5f7-7uaaa-aaaaa-qaaca-cai"),
+    })
+
+    const sellerId = await openm.getOriginalOwner(props.id);
+    const itemPrice = await openm.getListedNFTPrice(props.id);
+
+    // const result = await tokenActor.transfer(sellerId, itemPrice);
+    const result = await tokenActor.getSymbol();
+    console.log (result);
   }
 
   return (
