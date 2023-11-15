@@ -2,6 +2,7 @@ import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
 export interface _SERVICE {
+  'completePurchase' : ActorMethod<[Principal, Principal, Principal], string>,
   'getListedNFTPrice' : ActorMethod<[Principal], bigint>,
   'getListedNFTs' : ActorMethod<[], Array<Principal>>,
   'getOpenMCanisterID' : ActorMethod<[], Principal>,
