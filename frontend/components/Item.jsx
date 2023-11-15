@@ -3,7 +3,7 @@ import logo from "../assets/logo.png";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import {Principal} from "@dfinity/principal"
 import { idlFactory } from "../../src/declarations/nft/nft.did.js"
-import { idlFactory as tokenIdlFactory } from "../../src/declarations/token/index.js";
+import { idlFactory as tokenIdlFactory } from "../../src/declarations/token/token.did.js";
 import Button  from "./Button.jsx";
 import { openm } from "../../src/declarations/openm/index.js"
 import CURRENT_USER_ID from "../main.jsx";
@@ -18,7 +18,8 @@ function Item(props) {
   const [loaderHidden, setLoaderHidden] = useState(true);
   const [blur, setBlur] = useState();
   const [sellStatus, setSellStatus] = useState("");
-  const [priceLabel, setPriceLabel] = useState()
+  const [priceLabel, setPriceLabel] = useState();
+  const [shouldDisplay, setDisplay] = useState(true);
 
   const id = props.id;
   const localHost = "http://127.0.0.1:3000/";
@@ -107,6 +108,7 @@ function Item(props) {
 
   async function handleBuy() {
     console.log("buy was triggered")
+    setLoaderHidden(false)
     const tokenActor = await Actor.createActor(tokenIdlFactory, {
       agent,
       canisterId: Principal.fromText("br5f7-7uaaa-aaaaa-qaaca-cai"),
@@ -115,13 +117,18 @@ function Item(props) {
     const sellerId = await openm.getOriginalOwner(props.id);
     const itemPrice = await openm.getListedNFTPrice(props.id);
 
-    // const result = await tokenActor.transfer(sellerId, itemPrice);
-    const result = await tokenActor.getSymbol();
-    console.log (result);
+    const result = await tokenActor.transfer(sellerId, itemPrice);
+    
+    if (result == "Success") {
+      const transferResult = await openm.completePurchase(props.id, sellerId, CURRENT_USER_ID);
+      console.log("Purchase: ", transferResult);
+      setLoaderHidden(true);
+      setDisplay(false)
+    }
   }
 
   return (
-    <div className="disGrid-item">
+    <div style={{display: shouldDisplay ? "inline" : "none"}} className="disGrid-item">
       <div className="disPaper-root disCard-root makeStyles-root-17 disPaper-elevation1 disPaper-rounded">
         <img
           className="disCardMedia-root makeStyles-image-19 disCardMedia-media disCardMedia-img"
